@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gendrobe MVP - Quiet Luxury</title>
+    
+    <!-- Google Fonts för en ren, minimalistisk look (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           CSS VARIABLES (Quiet Luxury Estetik)
+           ========================================= */
+        :root {
+            --bg-color: #F9F9F7; /* Off-white */
+            --surface-color: #FFFFFF;
+            --text-main: #2A2A2A; /* Mörkgrå */
+            --text-muted: #7A7A7A;
+            --border-color: #E2E2DF;
+            --accent-color: #4A4A4A;
+            --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.04);
+            --shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.08);
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --radius-pill: 50px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* =========================================
+           GLOBAL STYLES
+           ========================================= */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3 {
+            font-weight: 500;
+            letter-spacing: -0.02em;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* =========================================
+           NAVIGATION (Tabs)
+           ========================================= */
+        header {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            color: var(--text-main);
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            position: relative;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+        }
+
+        .tab-btn.active {
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -17px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--text-main);
+        }
+
+        /* =========================================
+           SECTIONS & LAYOUT
+           ========================================= */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background-color: var(--surface-color);
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        /* =========================================
+           FORMS & INPUTS
+           ========================================= */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        input[type="text"],
+        select,
+        input[type="range"] {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 1rem;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            transition: var(--transition);
+        }
+
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            background-color: var(--surface-color);
+        }
+
+        .btn {
+            background-color: var(--text-main);
+            color: #FFF;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+        }
+
+        .btn:hover {
+            background-color: #000;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--bg-color);
+            border-color: var(--text-main);
+            color: var(--text-main);
+        }
+
+        /* =========================================
+           COMPONENTS (Tags, Grids, Lists)
+           ========================================= */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .item-card {
+            padding: 1.5rem;
+            background-color: var(--surface-color);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-soft);
+            position: relative; /* För raderaknappen */
+        }
+        
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #ff4d4f;
+            cursor: pointer;
+            font-size: 1.2rem;
+            opacity: 0.6;
+            transition: var(--transition);
+            padding: 5px;
+            line-height: 1;
+        }
+
+        .delete-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .item-category {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-name {
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        /* Tags for "Lås plagg" */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-pill);
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            user-select: none;
+        }
+
+        .tag.locked {
+            background-color: var(--text-main);
+            color: #FFF;
+            border-color: var(--text-main);
+        }
+
+        /* Vibes buttons */
+        .vibes-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Generated Outfit */
+        .outfit-result {
+            margin-top: 2rem;
+            padding: 2rem;
+            background-color: var(--bg-color);
+            border-radius: var(--radius-md);
+            border: 1px dashed var(--border-color);
+        }
+
+        .outfit-list {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+
+        .outfit-list li {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .outfit-list li:last-child {
+            border-bottom: none;
+        }
+
+        .outfit-cat {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .outfit-item {
+            font-weight: 500;
+        }
+
+        /* History */
+        .history-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative; /* För raderaknappen */
+        }
+
+        .history-vibe-badge {
+            display: inline-block;
+            background-color: var(--border-color);
+            color: var(--text-main);
+            padding: 0.2rem 0.6rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .history-rating {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-main);
+            background: var(--bg-color);
+            height: 60px;
+            width: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        /* Suggestions */
+        .suggestion-card {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        
+        .suggestion-img {
+            width: 100px;
+            height: 100px;
+            background-color: var(--border-color);
+            border-radius: var(--radius-sm);
+            object-fit: cover;
+        }
+
+        .suggestion-content p {
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* AI Loading & Results */
+        .ai-loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-style: italic;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        .ai-reasoning {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: var(--bg-color);
+            border-left: 3px solid var(--accent-color);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+        
+        .ai-rating-badge {
+            display: inline-block;
+            background-color: var(--text-main);
+            color: #FFF;
+            padding: 0.3rem 0.8rem;
+            border-radius: var(--radius-pill);
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Utility */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+
+        .rating-display {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="logo">Gendrobe</div>
+            
+            <!-- API Key Input för lokal lagring -->
+            <div style="max-width: 400px; margin: 0 auto 2rem auto; display: flex; gap: 0.5rem;">
+                <input type="password" id="gemini-api-input" placeholder="Klistra in din Gemini API-nyckel här" style="font-size: 0.8rem; padding: 0.5rem;">
+                <button class="btn" id="btn-save-key" style="width: auto; padding: 0.5rem 1rem; font-size: 0.8rem;">Spara lokalt</button>
+            </div>
+
+            <nav class="tabs">
+                <button class="tab-btn active" data-target="tab-outfit">Skapa Outfit</button>
+                <button class="tab-btn" data-target="tab-wardrobe">Min Garderob</button>
+                <button class="tab-btn" data-target="tab-history">Historik</button>
+                <button class="tab-btn" data-target="tab-suggestions">Smarta Förslag</button>
+            </nav>
+        </header>
+
+        <main>
+            <!-- ==============================================
+                 FLIK 2: SKAPA OUTFIT (Default open)
+                 ============================================== -->
+            <section id="tab-outfit" class="tab-content active">
+                <div class="card">
+                    <h2>Välj din Vibe</h2>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Sätt tonen för din outfit.</p>
+                    <div class="vibes-container">
+                        <button class="btn btn-outline vibe-btn" data-vibe="Casual">Casual</button>
+                        <button class="btn btn-outline vibe-btn" data-vibe="Office">Office</button>
+                        <button class="btn btn-outline vibe-btn" data-vibe="Formal">Formal</button>
+                    </div>
+
+                    <div style="margin-top: 2rem;">
+                        <h3>Lås Plagg</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">Välj plagg som måste ingå i nästa generering.</p>
+                        <div class="tags-container" id="locked-items-container">
+                            <!-- Tags renderas här av JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div id="ai-loading-container" class="ai-loading">
+                    AI Stylisten tänker... 💡
+                </div>
+
+                <!-- Genererad outfit container -->
+                <div id="generated-outfit-container" style="display: none;">
+                    <!-- Resultaten genereras här -->
+                </div>
+            </section>
+
+            <!-- ==============================================
+                 FLIK 1: MIN GARDEROB
+                 ============================================== -->
+            <section id="tab-wardrobe" class="tab-content">
+                <div class="card">
+                    <h2>Lägg till nytt plagg</h2>
+                    <form id="form-add-item" style="margin-top: 1.5rem;">
+                        <div class="form-group">
+                            <label for="item-name">Plaggets namn</label>
+                            <input type="text" id="item-name" placeholder="T.ex. Vit linneskjorta" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="item-category">Kategori</label>
+                            <select id="item-category" required>
+                                <option value="" disabled selected>Välj kategori...</option>
+                                <option value="Överdel">Överdel</option>
+                                <option value="Byxa">Byxa</option>
+                                <option value="Kavaj/Jacka">Kavaj/Jacka</option>
+                                <option value="Sko">Sko</option>
+                                <option value="Klocka">Klocka</option>
+                                <option value="Tillbehör">Tillbehör</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn">Lägg till i garderob</button>
+                    </form>
+                </div>
+
+                <h3>Mina Plagg</h3>
+                <div class="grid" id="wardrobe-grid" style="margin-top: 1.5rem;">
+                    <!-- Garderob renderas här -->
+                </div>
+            </section>
+
+            <!-- ==============================================
+                 FLIK 3: HISTORIK
+                 ============================================== -->
+            <section id="tab-history" class="tab-content">
+                <h2>Sparade Outfits</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem;">Dina tidigare kombinationer sorterade efter betyg.</p>
+                <div id="history-container">
+                    <!-- Historik renderas här -->
+                </div>
+            </section>
+
+            <!-- ==============================================
+                 FLIK 4: SMARTA FÖRSLAG
+                 ============================================== -->
+            <section id="tab-suggestions" class="tab-content">
+                <h2>The Unlocker</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem;">Smarta kompletteringar till din befintliga garderob baserat på dina vanor.</p>
+                
+                <div class="card suggestion-card">
+                    <img src="https://images.unsplash.com/photo-1614252332828-5911ab44b931?auto=format&fit=crop&q=80&w=200&h=200" alt="Loafers" class="suggestion-img">
+                    <div class="suggestion-content">
+                        <h3>Bruna Mockaloafers</h3>
+                        <p>Köp detta för att låsa upp <strong>8 nya kombinationer</strong> till Office-vibes.</p>
+                    </div>
+                </div>
+
+                <div class="card suggestion-card">
+                    <img src="https://images.unsplash.com/photo-1594938298596-105c317bd6a5?auto=format&fit=crop&q=80&w=200&h=200" alt="Linnekavaj" class="suggestion-img">
+                    <div class="suggestion-content">
+                        <h3>Marinblå Linnekavaj</h3>
+                        <p>Köp detta för att låsa upp <strong>5 nya kombinationer</strong> perfekta för Casual Friday.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Inkludera Supabase via CDN -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+    <script>
+        /* =========================================
+           KONFIGURATION & STATE
+           ========================================= */
+        // FYLL I DINA API-NYCKLAR HÄR:
+        const GEMINI_MODEL = "gemini-2.0-flash"; // Ändra till önskad modell (t.ex. gemini-2.0-flash, gemini-1.5-flash)
+        const SUPABASE_URL = 'https://nhzdhxyjepphxdnmvjvi.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5oemRoeHlqZXBwaHhkbm12anZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4MjQ5NTgsImV4cCI6MjA5NDQwMDk1OH0.eWz164H7LL8BNQy1vlSeKsEorzLduQHGeoVT5QqA1p8';
+
+        // Skapa klient (Hantera gracefully om nycklar saknas för PoC)
+        let supabaseClient = null;
+        if (SUPABASE_URL && SUPABASE_ANON_KEY) {
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } else {
+            console.warn("Supabase-nycklar saknas. Använder in-memory mock-data för PoC.");
+        }
+
+        // Applikations-state
+        const state = {
+            wardrobe: [],
+            history: [],
+            lockedItemIds: new Set(),
+            currentOutfitText: '',
+            currentVibe: ''
+        };
+
+        // Fallback mock-data om Supabase inte är konfigurerat
+        const mockWardrobe = [
+            { id: 1, name: 'Vit Oxfordskjorta', category: 'Överdel' },
+            { id: 2, name: 'Marinblå Chinos', category: 'Byxa' },
+            { id: 3, name: 'Grå Kostymbyxa', category: 'Byxa' },
+            { id: 4, name: 'Svarta Läderskor', category: 'Sko' },
+            { id: 5, name: 'Stålklocka', category: 'Klocka' }
+        ];
+
+        /* =========================================
+           DATAHÄMTNING & SYNKNING (SUPABASE / MOCK)
+           ========================================= */
+        async function fetchWardrobe() {
+            if (supabaseClient) {
+                try {
+                    const { data, error } = await supabaseClient.from('wardrobe').select('*').order('id', { ascending: true });
+                    if (error) throw error;
+                    state.wardrobe = data || [];
+                } catch (error) {
+                    console.error("Fel vid hämtning av garderob:", error);
+                }
+            } else {
+                state.wardrobe = [...mockWardrobe];
+            }
+            renderWardrobe();
+            renderLockedTags();
+        }
+
+        async function fetchHistory() {
+            if (supabaseClient) {
+                try {
+                    const { data, error } = await supabaseClient.from('history').select('*').order('rating', { ascending: false });
+                    if (error) throw error;
+                    state.history = data || [];
+                } catch (error) {
+                    console.error("Fel vid hämtning av historik:", error);
+                }
+            }
+            renderHistory();
+        }
+
+        async function addWardrobeItem(name, category) {
+            const newItem = { name, category };
+            if (supabaseClient) {
+                try {
+                    const { data, error } = await supabaseClient.from('wardrobe').insert([newItem]).select();
+                    if (error) throw error;
+                    if (data) state.wardrobe.push(data[0]);
+                } catch (error) {
+                    console.error("Fel vid sparande av plagg:", error);
+                    alert("Kunde inte spara plagget.");
+                }
+            } else {
+                newItem.id = Date.now();
+                state.wardrobe.push(newItem);
+            }
+            renderWardrobe();
+            renderLockedTags();
+        }
+
+        async function addHistoryItem(outfitText, rating, vibe) {
+            const newHistory = { outfit_text: outfitText, rating: parseInt(rating), vibe: vibe };
+            if (supabaseClient) {
+                try {
+                    const { data, error } = await supabaseClient.from('history').insert([newHistory]).select();
+                    if (error) throw error;
+                    if (data) state.history.push(data[0]);
+                } catch (error) {
+                    console.error("Fel vid sparande av historik:", error);
+                    alert("Kunde inte spara outfit.");
+                }
+            } else {
+                newHistory.id = Date.now();
+                newHistory.created_at = new Date().toISOString();
+                state.history.push(newHistory);
+                state.history.sort((a, b) => b.rating - a.rating); // Sortera fallande
+            }
+            fetchHistory(); // Ladda om listan
+            alert("Outfit sparad!");
+        }
+
+        async function deleteWardrobeItem(id) {
+            if (!confirm("Är du säker på att du vill radera detta plagg?")) return;
+            
+            if (supabaseClient) {
+                try {
+                    const { error } = await supabaseClient.from('wardrobe').delete().eq('id', id);
+                    if (error) throw error;
+                    state.wardrobe = state.wardrobe.filter(item => item.id !== id);
+                    state.lockedItemIds.delete(id); // Ta bort från låsta plagg om den fanns där
+                } catch (error) {
+                    console.error("Fel vid radering av plagg:", error);
+                    alert("Kunde inte radera plagget.");
+                    return;
+                }
+            } else {
+                state.wardrobe = state.wardrobe.filter(item => item.id !== id);
+                state.lockedItemIds.delete(id);
+            }
+            renderWardrobe();
+            renderLockedTags();
+        }
+
+        async function deleteHistoryItem(id) {
+            if (!confirm("Är du säker på att du vill radera denna outfit?")) return;
+
+            if (supabaseClient) {
+                try {
+                    const { error } = await supabaseClient.from('history').delete().eq('id', id);
+                    if (error) throw error;
+                    state.history = state.history.filter(item => item.id !== id);
+                } catch (error) {
+                    console.error("Fel vid radering av historik:", error);
+                    alert("Kunde inte radera outfit.");
+                    return;
+                }
+            } else {
+                state.history = state.history.filter(item => item.id !== id);
+            }
+            renderHistory();
+        }
+
+        /* =========================================
+           DOM-UPPDATERINGAR (RENDER FUNCTIONS)
+           ========================================= */
+        function renderWardrobe() {
+            const grid = document.getElementById('wardrobe-grid');
+            grid.innerHTML = '';
+            
+            if (state.wardrobe.length === 0) {
+                grid.innerHTML = '<div class="empty-state">Din garderob är tom. Lägg till plagg ovan.</div>';
+                return;
+            }
+
+            state.wardrobe.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'item-card';
+                card.innerHTML = `
+                    <button class="delete-btn" title="Radera plagg" onclick="deleteWardrobeItem(${item.id})">×</button>
+                    <div class="item-category">${item.category}</div>
+                    <div class="item-name">${item.name}</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderLockedTags() {
+            const container = document.getElementById('locked-items-container');
+            container.innerHTML = '';
+
+            if (state.wardrobe.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;">Lägg till plagg i "Min Garderob" först.</p>';
+                return;
+            }
+
+            state.wardrobe.forEach(item => {
+                const tag = document.createElement('div');
+                tag.className = `tag ${state.lockedItemIds.has(item.id) ? 'locked' : ''}`;
+                tag.innerText = item.name;
+                tag.onclick = () => toggleLockItem(item.id, tag);
+                container.appendChild(tag);
+            });
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('history-container');
+            container.innerHTML = '';
+
+            if (state.history.length === 0) {
+                container.innerHTML = '<div class="card empty-state">Du har inga sparade outfits ännu.</div>';
+                return;
+            }
+
+            state.history.forEach(entry => {
+                const card = document.createElement('div');
+                card.className = 'card history-card';
+                
+                // Formatera outfit text (radbrytningar till <br>)
+                const formattedText = entry.outfit_text.replace(/\n/g, '<br>');
+                const dateStr = entry.created_at ? new Date(entry.created_at).toLocaleDateString('sv-SE') : '';
+
+                card.innerHTML = `
+                    <button class="delete-btn" title="Radera outfit" onclick="deleteHistoryItem(${entry.id})">×</button>
+                    <div style="padding-right: 20px;">
+                        <span class="history-vibe-badge">${entry.vibe || 'Okänd Vibe'}</span>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.5rem;">${dateStr}</p>
+                        <p style="line-height:1.5;">${formattedText}</p>
+                    </div>
+                    <div class="history-rating">${entry.rating}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        /* =========================================
+           LOGIK FÖR ATT GENERERA OUTFITS
+           ========================================= */
+        function toggleLockItem(id, tagElement) {
+            if (state.lockedItemIds.has(id)) {
+                state.lockedItemIds.delete(id);
+                tagElement.classList.remove('locked');
+            } else {
+                state.lockedItemIds.add(id);
+                tagElement.classList.add('locked');
+            }
+        }
+
+        async function generateOutfit(vibe) {
+            const apiKey = localStorage.getItem('gemini_api_key');
+            if (!apiKey) {
+                alert("Du måste klistra in och spara din Gemini API-nyckel i toppen av sidan för att använda AI-Stylisten.");
+                return;
+            }
+
+            state.currentVibe = vibe;
+            
+            // Hantera UI för laddning
+            document.getElementById('generated-outfit-container').style.display = 'none';
+            document.getElementById('ai-loading-container').style.display = 'block';
+            document.getElementById('ai-loading-container').innerHTML = 'AI Stylisten tänker... 💡';
+            
+            // Samla in data för prompten
+            const wardrobeJson = JSON.stringify(state.wardrobe.map(i => ({ category: i.category, name: i.name })));
+            const lockedItems = state.wardrobe.filter(item => state.lockedItemIds.has(item.id));
+            const lockedJson = JSON.stringify(lockedItems.map(i => ({ category: i.category, name: i.name })));
+
+            const prompt = `Du är en expert-stylist för män. Ditt uppdrag är att bygga 5 (FEM) unika och perfekt färgkoordinerade outfits för tillfället: ${vibe}. Du MÅSTE följa dessa regler:
+    A. Du får ENDAST använda plagg från denna array: ${wardrobeJson}.
+    B. VARJE outfit MÅSTE inkludera dessa låsta plagg (om några finns): ${lockedJson}.
+    C. Anpassa antalet plagg efter tillfället. För en "Casual" outfit behövs sällan en kavaj/kostymjacka. Sätt värdet till "Ingen" om ett plagg inte behövs.
+    D. Se till att de 5 outfit-förslagen är olika från varandra i stil och färg, så långt garderoben tillåter.
+    Svara ENBART med ett giltigt JSON-objekt med denna struktur (inga markdown-block, bara en array av 5 objekt inuti en huvud-nyckel):
+    {
+      "outfits": [
+        {
+          "outfit_list": {"Kavaj/Jacka": "Plagg eller 'Ingen'", "Överdel": "Plagg", "Underdel": "Plagg", "Skor": "Plagg", "Klocka": "Plagg eller 'Ingen'", "Tillbehör/Strumpor": "Plagg eller 'Ingen'"},
+          "ai_rating": [Siffra 0.0 - 10.0, baserat på färg/stilteori],
+          "reasoning": [Kort svensk förklaring till varför färgerna och plaggen i just denna outfit fungerar]
+        },
+        ... (4 objekt till i samma format)
+      ]
+    }`;
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: prompt
+                            }]
+                        }],
+                        generationConfig: {
+                            temperature: 0.7,
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                let resultText = data.candidates[0].content.parts[0].text;
+                
+                // Rensa bort eventuella markdown code blocks om Gemini struntar i instruktionen
+                resultText = resultText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+
+                const aiResult = JSON.parse(resultText);
+
+                // Bygg UI för alla 5 outfits
+                const container = document.getElementById('generated-outfit-container');
+                container.innerHTML = '<h3>Dina 5 framtagna Outfits</h3>';
+                
+                aiResult.outfits.forEach((outfit, index) => {
+                    const outfitTextLines = [];
+                    let listHTML = '';
+                    
+                    for (const [category, name] of Object.entries(outfit.outfit_list)) {
+                        // Ignorera instruktions-strängar, tomma värden eller om AI:n anser att plagget inte behövs
+                        const invalidValues = ["plagg", "plagg eller 'ingen'", "ingen", "none", "", "n/a"];
+                        const nameLower = name ? name.toString().toLowerCase().trim() : "";
+                        
+                        if (!invalidValues.includes(nameLower)) {
+                            listHTML += `<li><span class="outfit-cat">${category}</span> <span class="outfit-item">${name}</span></li>`;
+                            outfitTextLines.push(`${category}: ${name}`);
+                        }
+                    }
+
+                    const outfitTextStr = outfitTextLines.join('\n');
+                    const sliderId = `rating-slider-${index}`;
+                    const valId = `rating-val-${index}`;
+
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.style.marginTop = '2rem';
+                    card.innerHTML = `
+                        <h4>Förslag ${index + 1}</h4>
+                        <div style="margin-top: 1rem;">
+                            <span class="ai-rating-badge">AI Betyg: ${outfit.ai_rating}/10</span>
+                        </div>
+
+                        <div class="outfit-result">
+                            <ul class="outfit-list">
+                                ${listHTML}
+                            </ul>
+                        </div>
+                        
+                        <div class="ai-reasoning">
+                            <strong>Stylistens motivering:</strong><br>${outfit.reasoning}
+                        </div>
+                        
+                        <div style="margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 2rem;">
+                            <label for="${sliderId}">Ditt IRL Betyg (0-10)</label>
+                            <input type="range" id="${sliderId}" min="0" max="10" step="1" value="7" oninput="document.getElementById('${valId}').innerText = this.value">
+                            <div class="rating-display"><span id="${valId}">7</span>/10</div>
+                            <button class="btn" onclick="addHistoryItem(\`${outfitTextStr}\`, document.getElementById('${sliderId}').value, state.currentVibe)">Spara detta förslag</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+
+                // Göm laddning, visa resultat
+                document.getElementById('ai-loading-container').style.display = 'none';
+                document.getElementById('generated-outfit-container').style.display = 'block';
+                document.getElementById('generated-outfit-container').scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                console.error("Fel vid anrop till Gemini API:", error);
+                document.getElementById('ai-loading-container').innerHTML = `<span style="color: red;">Något gick fel med AI Stylisten. Vänligen försök igen.</span>`;
+            }
+        }
+
+        /* =========================================
+           EVENT LISTENERS & INIT
+           ========================================= */
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Hantera API-nyckel
+            const keyInput = document.getElementById('gemini-api-input');
+            const savedKey = localStorage.getItem('gemini_api_key');
+            if (savedKey) {
+                keyInput.value = savedKey;
+            }
+
+            document.getElementById('btn-save-key').addEventListener('click', () => {
+                const val = keyInput.value.trim();
+                if (val) {
+                    localStorage.setItem('gemini_api_key', val);
+                    alert("Nyckeln är sparad säkert i din lokala webbläsare!");
+                } else {
+                    localStorage.removeItem('gemini_api_key');
+                    alert("Nyckeln borttagen.");
+                }
+            });
+
+            // Flik-navigering
+            const tabs = document.querySelectorAll('.tab-btn');
+            const contents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Ta bort active från alla
+                    tabs.forEach(t => t.classList.remove('active'));
+                    contents.forEach(c => c.classList.remove('active'));
+                    
+                    // Lägg till på vald
+                    tab.classList.add('active');
+                    document.getElementById(tab.dataset.target).classList.add('active');
+                });
+            });
+
+            // Formulär: Lägg till plagg
+            document.getElementById('form-add-item').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('item-name').value;
+                const category = document.getElementById('item-category').value;
+                addWardrobeItem(name, category);
+                e.target.reset(); // Rensa formuläret
+            });
+
+            // Vibe-knappar genererar outfit
+            document.querySelectorAll('.vibe-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const vibe = e.target.dataset.vibe;
+                    generateOutfit(vibe);
+                });
+            });
+
+            // Initiera data
+            fetchWardrobe();
+            fetchHistory();
+        });
+    </script>
+</body>
+</html>
