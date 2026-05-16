@@ -848,7 +848,8 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error(`API Error: ${response.status}`);
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(`API Error: ${response.status} - ${errorData.error?.message || response.statusText}`);
                 }
 
                 const data = await response.json();
@@ -914,12 +915,19 @@
                 // Göm laddning, visa resultat
                 document.getElementById('ai-loading-container').style.display = 'none';
                 document.getElementById('generated-outfit-container').style.display = 'block';
-                document.getElementById('generated-outfit-container').scrollIntoView({ behavior: 'smooth' });
 
             } catch (error) {
                 console.error("Fel vid anrop till Gemini API:", error);
-                document.getElementById('ai-loading-container').innerHTML = `<span style="color: red;">Något gick fel med AI Stylisten. Vänligen försök igen.</span>`;
+                document.getElementById('ai-loading-container').innerHTML = `
+                    <div style="color: #ff4d4f; padding: 1rem; border: 1px solid #ff4d4f; border-radius: 8px; text-align: left;">
+                        <strong>Något gick fel med AI Stylisten:</strong><br>
+                        <span style="font-size: 0.9em; font-family: monospace;">${error.message}</span>
+                        <br><br>
+                        <em style="font-size: 0.8em; color: var(--text-muted);">Tips: Kontrollera att API-nyckeln är korrekt inkopierad utan mellanslag, eller att modellen (${GEMINI_MODEL}) är tillgänglig i din region.</em>
+                    </div>
+                `;
             }
+        }
         }
 
         /* =========================================
