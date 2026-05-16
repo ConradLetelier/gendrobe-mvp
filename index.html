@@ -879,7 +879,7 @@
                         }
                     }
 
-                    const outfitTextStr = outfitTextLines.join('\n');
+                    const outfitTextStr = outfitTextLines.join('\\n'); // Fix för radbrytningar i onclick
                     const sliderId = `rating-slider-${index}`;
                     const valId = `rating-val-${index}`;
 
@@ -906,7 +906,7 @@
                             <label for="${sliderId}">Ditt IRL Betyg (0-10)</label>
                             <input type="range" id="${sliderId}" min="0" max="10" step="1" value="7" oninput="document.getElementById('${valId}').innerText = this.value">
                             <div class="rating-display"><span id="${valId}">7</span>/10</div>
-                            <button class="btn" onclick="addHistoryItem(\`${outfitTextStr}\`, document.getElementById('${sliderId}').value, state.currentVibe)">Spara detta förslag</button>
+                            <button class="btn" onclick="addHistoryItem('${outfitTextStr}', document.getElementById('${sliderId}').value, state.currentVibe)">Spara detta förslag</button>
                         </div>
                     `;
                     container.appendChild(card);
@@ -941,7 +941,6 @@
                     </div>
                 `;
             }
-        }
         }
 
         /* =========================================
