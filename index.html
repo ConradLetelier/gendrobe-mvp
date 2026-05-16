@@ -925,11 +925,12 @@
                         await supabaseClient.from('error_logs').insert([{
                             error_message: error.message || "Okänt fel vid generering"
                         }]);
-                        console.log("Felet loggades till Supabase.");
                     } catch (dbError) {
                         console.error("Kunde inte skriva error till loggen:", dbError);
                     }
                 }
+                
+                alert("TEKNISKT FEL FÖR DEBUG: " + error.message);
 
                 document.getElementById('ai-loading-container').innerHTML = `
                     <div style="color: #ff4d4f; padding: 1rem; border: 1px solid #ff4d4f; border-radius: 8px; text-align: left;">
