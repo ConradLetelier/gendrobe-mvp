@@ -918,12 +918,25 @@
 
             } catch (error) {
                 console.error("Fel vid anrop till Gemini API:", error);
+                
+                // --- NYTT: Skicka felet till Supabase error_logs ---
+                if (supabaseClient) {
+                    try {
+                        await supabaseClient.from('error_logs').insert([{
+                            error_message: error.message || "Okänt fel vid generering"
+                        }]);
+                        console.log("Felet loggades till Supabase.");
+                    } catch (dbError) {
+                        console.error("Kunde inte skriva error till loggen:", dbError);
+                    }
+                }
+
                 document.getElementById('ai-loading-container').innerHTML = `
                     <div style="color: #ff4d4f; padding: 1rem; border: 1px solid #ff4d4f; border-radius: 8px; text-align: left;">
                         <strong>Något gick fel med AI Stylisten:</strong><br>
-                        <span style="font-size: 0.9em; font-family: monospace;">${error.message}</span>
+                        <span style="font-size: 0.9em; font-family: monospace;">Ett fel uppstod. Tekniska detaljer har skickats till utvecklarna via Supabase error_logs.</span>
                         <br><br>
-                        <em style="font-size: 0.8em; color: var(--text-muted);">Tips: Kontrollera att API-nyckeln är korrekt inkopierad utan mellanslag, eller att modellen (${GEMINI_MODEL}) är tillgänglig i din region.</em>
+                        <em style="font-size: 0.8em; color: var(--text-muted);">Tips: Kontrollera att API-nyckeln är korrekt inkopierad utan mellanslag.</em>
                     </div>
                 `;
             }
