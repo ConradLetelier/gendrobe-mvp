@@ -565,7 +565,7 @@
            KONFIGURATION & STATE
            ========================================= */
         // FYLL I DINA API-NYCKLAR HÄR:
-        const GEMINI_MODEL = "gemini-2.0-flash"; // Ändra till önskad modell (t.ex. gemini-2.0-flash, gemini-1.5-flash)
+        const GEMINI_MODEL = "gemini-3.0-flash-preview"; // Ändra till önskad modell (t.ex. gemini-3.0-flash-preview)
         const SUPABASE_URL = 'https://nhzdhxyjepphxdnmvjvi.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5oemRoeHlqZXBwaHhkbm12anZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4MjQ5NTgsImV4cCI6MjA5NDQwMDk1OH0.eWz164H7LL8BNQy1vlSeKsEorzLduQHGeoVT5QqA1p8';
 
@@ -930,7 +930,7 @@
                     }
                 }
                 
-                alert("TEKNISKT FEL FÖR DEBUG: " + error.message);
+                // alert("TEKNISKT FEL FÖR DEBUG: " + error.message);
 
                 document.getElementById('ai-loading-container').innerHTML = `
                     <div style="color: #ff4d4f; padding: 1rem; border: 1px solid #ff4d4f; border-radius: 8px; text-align: left;">
